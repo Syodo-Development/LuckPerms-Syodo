@@ -39,9 +39,7 @@ import me.lucko.luckperms.common.commands.group.DeleteGroup;
 import me.lucko.luckperms.common.commands.group.GroupParentCommand;
 import me.lucko.luckperms.common.commands.group.ListGroups;
 import me.lucko.luckperms.common.commands.log.LogParentCommand;
-import me.lucko.luckperms.common.commands.misc.ApplyEditsCommand;
 import me.lucko.luckperms.common.commands.misc.BulkUpdateCommand;
-import me.lucko.luckperms.common.commands.misc.EditorCommand;
 import me.lucko.luckperms.common.commands.misc.ExportCommand;
 import me.lucko.luckperms.common.commands.misc.ImportCommand;
 import me.lucko.luckperms.common.commands.misc.InfoCommand;
@@ -51,7 +49,6 @@ import me.lucko.luckperms.common.commands.misc.SearchCommand;
 import me.lucko.luckperms.common.commands.misc.SyncCommand;
 import me.lucko.luckperms.common.commands.misc.TranslationsCommand;
 import me.lucko.luckperms.common.commands.misc.TreeCommand;
-import me.lucko.luckperms.common.commands.misc.TrustEditorCommand;
 import me.lucko.luckperms.common.commands.misc.VerboseCommand;
 import me.lucko.luckperms.common.commands.track.CreateTrack;
 import me.lucko.luckperms.common.commands.track.DeleteTrack;
@@ -116,7 +113,6 @@ public class CommandManager {
                 .add(new LogParentCommand())
                 .add(new SyncCommand())
                 .add(new InfoCommand())
-                .add(new EditorCommand())
                 .add(new VerboseCommand())
                 .add(new TreeCommand())
                 .add(new SearchCommand())
@@ -126,8 +122,6 @@ public class CommandManager {
                 .add(new ReloadConfigCommand())
                 .add(new BulkUpdateCommand())
                 .add(new TranslationsCommand())
-                .add(new ApplyEditsCommand())
-                .add(new TrustEditorCommand())
                 .add(new CreateGroup())
                 .add(new DeleteGroup())
                 .add(new ListGroups())

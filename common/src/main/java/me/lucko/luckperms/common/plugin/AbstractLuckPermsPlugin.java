@@ -63,8 +63,6 @@ import me.lucko.luckperms.common.tasks.ExpireTemporaryTask;
 import me.lucko.luckperms.common.tasks.SyncTask;
 import me.lucko.luckperms.common.treeview.PermissionRegistry;
 import me.lucko.luckperms.common.verbose.VerboseHandler;
-import me.lucko.luckperms.common.webeditor.socket.WebEditorSocket;
-import me.lucko.luckperms.common.webeditor.store.WebEditorStore;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.platform.Health;
 import okhttp3.OkHttpClient;
@@ -100,8 +98,6 @@ public abstract class AbstractLuckPermsPlugin implements LuckPermsPlugin {
     private LuckPermsConfiguration configuration;
     private OkHttpClient httpClient;
     private BytebinClient bytebin;
-    private BytesocksClient bytesocks;
-    private WebEditorStore webEditorStore;
     private TranslationRepository translationRepository;
     private FileWatcher fileWatcher = null;
     private Storage storage;
@@ -135,9 +131,6 @@ public abstract class AbstractLuckPermsPlugin implements LuckPermsPlugin {
         // load the sender factory instance
         setupSenderFactory();
 
-        // send the startup banner
-        Message.STARTUP_BANNER.send(getConsoleSender(), getBootstrap());
-
         // load some utilities early
         this.verboseHandler = new VerboseHandler(getBootstrap().getScheduler());
         this.logDispatcher = new LogDispatcher(this);
@@ -161,17 +154,9 @@ public abstract class AbstractLuckPermsPlugin implements LuckPermsPlugin {
                 getConfiguration().get(ConfigKeys.BYTEBIN_URL),
                 "luckperms"
         );
-        this.bytesocks = new BytesocksClient(
-                this.httpClient,
-                getConfiguration().get(ConfigKeys.BYTESOCKS_HOST),
-                getConfiguration().get(ConfigKeys.BYTESOCKS_USE_TLS),
-                "luckperms/editor"
-        );
-        this.webEditorStore = new WebEditorStore(this);
 
         // init translation repo and update bundle files
         this.translationRepository = new TranslationRepository(this);
-        this.translationRepository.scheduleRefresh();
 
         // now the configuration is loaded, we can create a storage factory and load initial dependencies
         StorageFactory storageFactory = new StorageFactory(this);
@@ -268,13 +253,6 @@ public abstract class AbstractLuckPermsPlugin implements LuckPermsPlugin {
 
         // cancel delayed/repeating tasks
         getBootstrap().getScheduler().shutdownScheduler();
-
-        // close web editor sockets
-        for (WebEditorSocket socket : this.webEditorStore.sockets().getSockets()) {
-            if (!socket.isClosed()) {
-                socket.close();
-            }
-        }
 
         // shutdown permission vault and verbose handler tasks
         this.permissionRegistry.close();
@@ -506,16 +484,6 @@ public abstract class AbstractLuckPermsPlugin implements LuckPermsPlugin {
     @Override
     public BytebinClient getBytebin() {
         return this.bytebin;
-    }
-
-    @Override
-    public BytesocksClient getBytesocks() {
-        return this.bytesocks;
-    }
-
-    @Override
-    public WebEditorStore getWebEditorStore() {
-        return this.webEditorStore;
     }
 
     @Override

@@ -56,7 +56,6 @@ import me.lucko.luckperms.common.storage.implementation.file.watcher.FileWatcher
 import me.lucko.luckperms.common.tasks.SyncTask;
 import me.lucko.luckperms.common.treeview.PermissionRegistry;
 import me.lucko.luckperms.common.verbose.VerboseHandler;
-import me.lucko.luckperms.common.webeditor.store.WebEditorStore;
 import net.luckperms.api.platform.Health;
 import net.luckperms.api.query.QueryOptions;
 
@@ -249,20 +248,6 @@ public interface LuckPermsPlugin {
      * @return the bytebin instance
      */
     BytebinClient getBytebin();
-
-    /**
-     * Gets the bytesocks instance in use by platform.
-     *
-     * @return the bytesocks instance
-     */
-    BytesocksClient getBytesocks();
-
-    /**
-     * Gets the web editor store
-     *
-     * @return the web editor store
-     */
-    WebEditorStore getWebEditorStore();
 
     /**
      * Runs a health check for the plugin.
