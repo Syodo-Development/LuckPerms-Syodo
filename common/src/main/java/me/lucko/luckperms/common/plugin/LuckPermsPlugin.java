@@ -36,10 +36,8 @@ import me.lucko.luckperms.common.dependencies.DependencyManager;
 import me.lucko.luckperms.common.event.EventDispatcher;
 import me.lucko.luckperms.common.extension.SimpleExtensionManager;
 import me.lucko.luckperms.common.http.BytebinClient;
-import me.lucko.luckperms.common.http.BytesocksClient;
 import me.lucko.luckperms.common.inheritance.InheritanceGraphFactory;
 import me.lucko.luckperms.common.locale.TranslationManager;
-import me.lucko.luckperms.common.locale.TranslationRepository;
 import me.lucko.luckperms.common.messaging.InternalMessagingService;
 import me.lucko.luckperms.common.model.Group;
 import me.lucko.luckperms.common.model.Track;
@@ -179,13 +177,6 @@ public interface LuckPermsPlugin {
     TranslationManager getTranslationManager();
 
     /**
-     * Gets the translation repository
-     *
-     * @return the translation repository
-     */
-    TranslationRepository getTranslationRepository();
-
-    /**
      * Gets the dependency manager for the plugin
      *
      * @return the dependency manager
@@ -241,13 +232,6 @@ public interface LuckPermsPlugin {
      * @return the file watcher
      */
     Optional<FileWatcher> getFileWatcher();
-
-    /**
-     * Gets the bytebin instance in use by platform.
-     *
-     * @return the bytebin instance
-     */
-    BytebinClient getBytebin();
 
     /**
      * Runs a health check for the plugin.

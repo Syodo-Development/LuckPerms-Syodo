@@ -43,12 +43,8 @@ import me.lucko.luckperms.common.event.AbstractEventBus;
 import me.lucko.luckperms.common.event.EventDispatcher;
 import me.lucko.luckperms.common.event.gen.GeneratedEventClass;
 import me.lucko.luckperms.common.extension.SimpleExtensionManager;
-import me.lucko.luckperms.common.http.BytebinClient;
-import me.lucko.luckperms.common.http.BytesocksClient;
 import me.lucko.luckperms.common.inheritance.InheritanceGraphFactory;
-import me.lucko.luckperms.common.locale.Message;
 import me.lucko.luckperms.common.locale.TranslationManager;
-import me.lucko.luckperms.common.locale.TranslationRepository;
 import me.lucko.luckperms.common.messaging.InternalMessagingService;
 import me.lucko.luckperms.common.messaging.MessagingFactory;
 import me.lucko.luckperms.common.plugin.logging.PluginLogger;
@@ -96,9 +92,6 @@ public abstract class AbstractLuckPermsPlugin implements LuckPermsPlugin {
     private PermissionRegistry permissionRegistry;
     private LogDispatcher logDispatcher;
     private LuckPermsConfiguration configuration;
-    private OkHttpClient httpClient;
-    private BytebinClient bytebin;
-    private TranslationRepository translationRepository;
     private FileWatcher fileWatcher = null;
     private Storage storage;
     private InternalMessagingService messagingService = null;
@@ -143,20 +136,6 @@ public abstract class AbstractLuckPermsPlugin implements LuckPermsPlugin {
                 new EnvironmentVariableConfigAdapter(this),
                 configFileAdapter
         ));
-
-        // setup a bytebin instance
-        this.httpClient = new OkHttpClient.Builder()
-                .callTimeout(15, TimeUnit.SECONDS)
-                .build();
-
-        this.bytebin = new BytebinClient(
-                this.httpClient,
-                getConfiguration().get(ConfigKeys.BYTEBIN_URL),
-                "luckperms"
-        );
-
-        // init translation repo and update bundle files
-        this.translationRepository = new TranslationRepository(this);
 
         // now the configuration is loaded, we can create a storage factory and load initial dependencies
         StorageFactory storageFactory = new StorageFactory(this);
@@ -219,7 +198,6 @@ public abstract class AbstractLuckPermsPlugin implements LuckPermsPlugin {
 
         // setup extension manager
         this.extensionManager = new SimpleExtensionManager(this);
-        this.extensionManager.loadExtensions(getBootstrap().getConfigDirectory().resolve("extensions"));
 
         // schedule update tasks
         int syncMins = getConfiguration().get(ConfigKeys.SYNC_TIME);
@@ -287,10 +265,6 @@ public abstract class AbstractLuckPermsPlugin implements LuckPermsPlugin {
 
         // shutdown async executor pool
         getBootstrap().getScheduler().shutdownExecutor();
-
-        // shutdown okhttp
-        this.httpClient.dispatcher().executorService().shutdown();
-        this.httpClient.connectionPool().evictAll();
 
         // close isolated loaders for non-relocated dependencies
         getDependencyManager().close();
@@ -475,20 +449,6 @@ public abstract class AbstractLuckPermsPlugin implements LuckPermsPlugin {
     @Override
     public LuckPermsConfiguration getConfiguration() {
         return this.configuration;
-    }
-
-    public OkHttpClient getHttpClient() {
-        return this.httpClient;
-    }
-
-    @Override
-    public BytebinClient getBytebin() {
-        return this.bytebin;
-    }
-
-    @Override
-    public TranslationRepository getTranslationRepository() {
-        return this.translationRepository;
     }
 
     @Override
